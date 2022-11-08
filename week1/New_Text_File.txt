@@ -1,0 +1,85 @@
+import os
+import meta
+from meta import plot2d
+from meta import *
+from meta import utils
+
+
+def main():
+	#Initialize OFF to 0
+	OFF=0;
+	cwd = utils.CurrentDirectory()
+	# If OFF-file exists, read and set OFF
+	if os.path.isfile(cwd + '/Morphed_HBM_OFF.txt'):
+		OFF_file=open(cwd + '/Morphed_HBM_OFF.txt','r')
+		lines=OFF_file.readlines()
+		OFF_file.close()
+		for line in lines:
+			try:
+				OFF=int(line.strip())
+				print('Using OFF OFF = ' + str(OFF) + ' from file ' + cwd + '/Morphed_HBM_OFF.txt')
+			except ValueError:
+			# If value entered was not an integer
+				print('Value ' + line.strip() + ' in file ' + cwd + '/Morphed_HBM_OFF.txt' + ' cannot be converted to an integer OFF. Using OFF = ' + str(OFF))
+			break
+		
+	# If OFF-file does not exist
+	else:
+		input = guitk.UserInput('Please enter the OFFSET used for the HBM manually.', '0')
+		try:
+			OFF=int(input)
+			print('Using OFF manually entered OFF OFF = ' + str(OFF))
+		except ValueError:
+			# If value entered was not an integer
+			print('Value ' + input + ' entered cannot be converted to an integer OFF. Using OFF = ' + str(OFF))
+	
+	utils.MetaCommand('options session controldraw disable')
+	
+	utils.MetaCommand('options var string PELVIS '
+	+str(OFF+8203))
+	
+	utils.MetaCommand('options var string LUMBAR '
+	+str(OFF+6100)+'-'+str(OFF+6109))
+	
+	utils.MetaCommand('options var string NECKLO '
+	+str(OFF+2106)+'-'+str(OFF+2107)
+	+str(OFF+2114)+'-'+str(OFF+2115)
+	+str(OFF+2125)+'-'+str(OFF+2126)
+	+str(OFF+2132)+'-'+str(OFF+2133))
+
+	utils.MetaCommand('options var string NECKC1 '
+	+str(OFF+2109))
+	
+	utils.MetaCommand('options var string NECKUP '
+	+str(OFF+2102)+'-'+str(OFF+2105)
+	+str(OFF+2110)+'-'+str(OFF+2113)
+	+str(OFF+2122)+'-'+str(OFF+2124)
+	+str(OFF+2129)+'-'+str(OFF+2131))
+	
+	utils.MetaCommand('options var string THORAX '
+#	+str(OFF+2108)
+	+str(OFF+4101)+'-'+str(OFF+4111)
+	+str(OFF+4116)+'-'+str(OFF+4135)
+	+str(OFF+4146)+'-'+str(OFF+4156))
+	
+	#
+#	utils.MetaCommand('add pid ${SKIN}')
+#	utils.MetaCommand('add pid ${LUMBAR}')
+#	utils.MetaCommand('add pid ${NECKLO}')
+#	utils.MetaCommand('add pid ${NECKC1}')
+#	utils.MetaCommand('add pid ${NECKUP}')
+#	utils.MetaCommand('add pid ${THORAX}')
+	utils.MetaCommand('style pid color 237_32_36_255 ${PELVIS}')
+	utils.MetaCommand('style pid color 255_204_0_255 ${LUMBAR}')
+	utils.MetaCommand('style pid color 63_114_215_255 ${NECKLO}')
+	utils.MetaCommand('style pid color 122_91_167_255 ${NECKC1}')
+	utils.MetaCommand('style pid color 83_182_68_255 ${NECKUP}')
+	utils.MetaCommand('style pid color 227_124_35_255 ${THORAX}')
+
+	#	
+	utils.MetaCommand('grstyle feature off')
+
+	utils.MetaCommand('options session controldraw enable')
+
+if __name__ == '__main__':
+	main()
